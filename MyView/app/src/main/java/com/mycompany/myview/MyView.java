@@ -57,7 +57,7 @@ public class MyView extends View {
         mPath = new Path();
         mLinePath = new Path();
         
-        mPathList =new ArrayList<DrawablePath>();
+        mPathList =new ArrayList<>();
         
         mPaint.setColor(Color.BLACK);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
