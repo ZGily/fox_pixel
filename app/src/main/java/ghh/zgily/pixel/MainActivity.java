@@ -14,6 +14,7 @@ import ghh.zgily.struct.PicRVItem;
 import java.util.ArrayList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView picRecycletView;
@@ -22,6 +23,13 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab2;
     boolean isSubFabShow = false;
     Toolbar toolbar;
+    
+    List<PicRVItem> data;
+    PicRVAdapter adapter;
+    
+    private boolean isShowCheck = false;
+    
+    private List<String> checkList = new ArrayList<>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
                         fab1.hide();
                         fab2.hide();
                         fab.setRotation(0);
+                        if (isShowCheck)
+                        {
+                            isShowCheck = !isShowCheck;
+                            adapter.setShouldShowCheckBox(false);
+                            refreshUI();
+                            checkList.clear();
+                        }
                     }
                     else
                     {
@@ -55,17 +70,114 @@ public class MainActivity extends AppCompatActivity {
                     isSubFabShow = !isSubFabShow;
                 }
             });
-        List<PicRVItem> data = new ArrayList<>();
+        fab1.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    int poslist[] = new int[checkList.size()];
+                    for (String pos : checkList)
+                    {
+                        int i = checkList.indexOf(pos);
+                        poslist[i] = Integer.parseInt(pos);
+                    }
+                    poslist = bubbleSort(poslist);
+                    int haveDelete = 0;
+                    for (int index: poslist)
+                    {
+                        data.remove(index-haveDelete);
+                        ++haveDelete;
+                    }
+                    refreshUI();
+                    fab.callOnClick();
+                }
+            });
+        data = new ArrayList<>();
         data.add(new PicRVItem("你好"));
         data.add(new PicRVItem("你好"));
         data.add(new PicRVItem("高欢欢"));
         data.add(new PicRVItem("喜欢"));
         data.add(new PicRVItem("wjy"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("高欢欢"));
+        data.add(new PicRVItem("喜欢"));
+        data.add(new PicRVItem("wjy"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("高欢欢"));
+        data.add(new PicRVItem("喜欢"));
+        data.add(new PicRVItem("wjy"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("高欢欢"));
+        data.add(new PicRVItem("喜欢"));
+        data.add(new PicRVItem("wjy"));
+        adapter = new PicRVAdapter(data);
         picRecycletView.setLayoutManager(new LinearLayoutManager(this));
-        picRecycletView.setAdapter(new PicRVAdapter(data));
+        picRecycletView.setAdapter(adapter);
         picRecycletView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
         picRecycletView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapter.setOnItemClick(new PicRVAdapter.onItemClick() {
+                @Override
+                public void onClick(View view, int pos) {
+                    if (isShowCheck)
+                    {
+                    if (checkList.contains(String.valueOf(pos))) {
+                        checkList.remove(String.valueOf(pos));
+                        Toast.makeText(MainActivity.this,"remove:"+pos,Toast.LENGTH_SHORT).show();
+                    } else {
+                        checkList.add(String.valueOf(pos));
+                        Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
+                    }
+                    }
+                }
+                @Override
+                public boolean onLongClick(View view, int pos) {
+                    if (isShowCheck) {
+                        //mBtn.setVisibility(View.GONE);
+                        adapter.setShouldShowCheckBox(false);
+                        refreshUI();
+                        checkList.clear();
+                    } else {
+                        adapter.setShouldShowCheckBox(true);
+                        refreshUI();
+                        checkList.add(String.valueOf(pos));
+                        Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
+                        //mBtn.setVisibility(View.VISIBLE);
+                        fab1.setBackgroundColor(0xFFFFFF);
+                        
+                    }
+                    
+                    isShowCheck = !isShowCheck;
+                    fab.callOnClick();
+                    return true;
+                }
+
+            });
     }
 
-
+    public static int[] bubbleSort(int[] array){
+        if(array == null)
+            return array;
+        int len = array.length;
+        for(int i = len - 1; i > 0; i--){
+            for(int j = 0; j < i; j++){
+                if(array[j] > array[j + 1]){
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                }
+            }
+        }
+        return array;
+    }
+    
+    private void refreshUI()
+    {
+        if (adapter == null) {
+            adapter = new PicRVAdapter(data);
+            picRecycletView.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+   }
 }
