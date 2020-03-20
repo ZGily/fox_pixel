@@ -10,7 +10,7 @@ import android.graphics.Color;
 public class MainActivity extends AppCompatActivity {
 
     MyView myview;
-    //ZoomView zoomview;
+    ZoomView zoomview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 		Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
         myview = (MyView) findViewById(R.id.MyView);
-        //zoomview = (ZoomView) findViewById(R.id.ZoomView);
+        zoomview = (ZoomView) findViewById(R.id.ZoomView);
     }
 
     @Override
