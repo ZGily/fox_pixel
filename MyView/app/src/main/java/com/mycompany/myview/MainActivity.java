@@ -10,6 +10,7 @@ import android.graphics.Color;
 public class MainActivity extends AppCompatActivity {
 
     MyView myview;
+    //ZoomView zoomview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 		Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
         myview = (MyView) findViewById(R.id.MyView);
+        //zoomview = (ZoomView) findViewById(R.id.ZoomView);
     }
 
     @Override
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.move:
+                myview.changeMoveStatus();
+                break;
             case R.id.undo:
                 myview.undoLast();
                 break;

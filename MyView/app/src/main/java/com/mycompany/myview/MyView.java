@@ -21,6 +21,8 @@ public class MyView extends View {
     
     int mPixelColor;
     
+    boolean isStartMove;
+    
     List<DrawablePath> mPathList;
     
     DrawablePath lastPath;
@@ -67,6 +69,8 @@ public class MyView extends View {
         
         mPixelColor = Color.RED;
         
+        isStartMove = false;
+        
         for (int i = 0;i<=50*16;i+=50)
         {
             mLinePath.moveTo(i,0);
@@ -92,6 +96,8 @@ public class MyView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isStartMove)
+        {
         int x = (int) event.getX();
         int y = (int) event.getY();
         x = (x / 50) * 50;
@@ -106,6 +112,8 @@ public class MyView extends View {
         ++step;
         mPath = new Path();
         invalidate();
+        return true;
+        }
         return super.onTouchEvent(event);
     }
     
@@ -124,6 +132,11 @@ public class MyView extends View {
         mPathList.remove(step);
         --step;
         invalidate();
+    }
+    
+    public void changeMoveStatus ()
+    {
+        isStartMove = !isStartMove;
     }
     
 }
