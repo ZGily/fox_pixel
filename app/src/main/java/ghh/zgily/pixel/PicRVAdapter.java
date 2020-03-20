@@ -25,7 +25,7 @@ public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
         //vh.pic.setBackgroundDrawable(itemList.get(pos).pic);
         final String text = itemList.get(pos).name;
         vh.name.setText(itemList.get(pos).name);
-        vh.check.setVisibility(0);
+        vh.check.setVisibility(-1);
         vh.itemView.setLongClickable(true);
         vh.itemView.setOnClickListener(new View.OnClickListener(){
                 @Override

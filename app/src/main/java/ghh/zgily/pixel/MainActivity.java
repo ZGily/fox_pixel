@@ -13,6 +13,7 @@ import java.util.List;
 import ghh.zgily.struct.PicRVItem;
 import java.util.ArrayList;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.DividerItemDecoration;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView picRecycletView;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         data.add(new PicRVItem("wjy"));
         picRecycletView.setLayoutManager(new LinearLayoutManager(this));
         picRecycletView.setAdapter(new PicRVAdapter(data));
+        picRecycletView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        picRecycletView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
 
