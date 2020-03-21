@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-		
 		toolbar=(Toolbar)findViewById(R.id.toolbar);
         picRecycletView = (RecyclerView) findViewById(R.id.recyclerview);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,6 +47,17 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View p1) {
                     //Snackbar.make(p1,"Hello",Snackbar.LENGTH_LONG).show();
+                    if (isShowCheck)
+                    {
+                        fab1.setImageResource(R.drawable.ic_delete);
+                        fab2.setImageResource(R.drawable.ic_export);
+                    }
+                    else
+                    {
+                        fab1.setImageResource(R.drawable.ic_open);
+                        fab2.setImageResource(R.drawable.ic_add);
+                    }
+                    
                     if (isSubFabShow)
                     {
                         fab1.hide();
@@ -65,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     {
                         fab1.show();
                         fab2.show();
-                        fab.setRotation(45);
+                        fab.setRotation(180);
                     }
                     isSubFabShow = !isSubFabShow;
                 }
@@ -91,23 +101,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         data = new ArrayList<>();
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("高欢欢"));
-        data.add(new PicRVItem("喜欢"));
-        data.add(new PicRVItem("wjy"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("高欢欢"));
-        data.add(new PicRVItem("喜欢"));
-        data.add(new PicRVItem("wjy"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("高欢欢"));
-        data.add(new PicRVItem("喜欢"));
-        data.add(new PicRVItem("wjy"));
-        data.add(new PicRVItem("你好"));
-        data.add(new PicRVItem("你好"));
+        data.add(new PicRVItem("1"));
+        data.add(new PicRVItem("2"));
+        data.add(new PicRVItem("3"));
+        data.add(new PicRVItem("4"));
+        data.add(new PicRVItem("5"));
+        data.add(new PicRVItem("6"));
+        data.add(new PicRVItem("7"));
+        data.add(new PicRVItem("8"));
+        data.add(new PicRVItem("9"));
+        data.add(new PicRVItem("10"));
+        data.add(new PicRVItem("12"));
+        data.add(new PicRVItem("12"));
+        data.add(new PicRVItem("13"));
+        data.add(new PicRVItem("14"));
+        data.add(new PicRVItem("15"));
+        data.add(new PicRVItem("16"));
+        data.add(new PicRVItem("17"));
         data.add(new PicRVItem("高欢欢"));
         data.add(new PicRVItem("喜欢"));
         data.add(new PicRVItem("wjy"));
@@ -123,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
                     {
                     if (checkList.contains(String.valueOf(pos))) {
                         checkList.remove(String.valueOf(pos));
-                        Toast.makeText(MainActivity.this,"remove:"+pos,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"remove:"+pos,Toast.LENGTH_SHORT).show();
                     } else {
                         checkList.add(String.valueOf(pos));
-                        Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
                     }
                     }
                 }
@@ -141,10 +151,8 @@ public class MainActivity extends AppCompatActivity {
                         adapter.setShouldShowCheckBox(true);
                         refreshUI();
                         checkList.add(String.valueOf(pos));
-                        Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
                         //mBtn.setVisibility(View.VISIBLE);
-                        fab1.setBackgroundColor(0xFFFFFF);
-                        
                     }
                     
                     isShowCheck = !isShowCheck;
