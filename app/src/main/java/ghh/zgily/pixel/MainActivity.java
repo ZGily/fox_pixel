@@ -15,8 +15,14 @@ import java.util.ArrayList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.widget.Toast;
+import android.Manifest;
+import pub.devrel.easypermissions.EasyPermissions;
+import android.support.annotation.NonNull;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import ghh.zgily.utils.PicFileTool;
+import android.graphics.Bitmap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     RecyclerView picRecycletView;
     FloatingActionButton fab;
     FloatingActionButton fab1;
@@ -35,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        requestRxPermissions();
+        
 		toolbar=(Toolbar)findViewById(R.id.toolbar);
         picRecycletView = (RecyclerView) findViewById(R.id.recyclerview);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -83,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         fab1.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p1) {
+                    if (isShowCheck)
+                    {
                     int poslist[] = new int[checkList.size()];
                     for (String pos : checkList)
                     {
@@ -97,9 +108,25 @@ public class MainActivity extends AppCompatActivity {
                         ++haveDelete;
                     }
                     refreshUI();
+                    PicFileTool.writeToFile(MainActivity.this,"test",data);
                     fab.callOnClick();
+                    }
                 }
             });
+            
+        fab2.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View p1) {
+                    if (!isShowCheck)
+                    {
+                        data.add(new PicRVItem("i love wjy"));
+                        refreshUI();
+                        PicFileTool.writeToFile(MainActivity.this,"test",data);
+                        fab.callOnClick();
+                    }
+                }
+            });
+        /*
         data = new ArrayList<>();
         data.add(new PicRVItem("1"));
         data.add(new PicRVItem("2"));
@@ -121,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
         data.add(new PicRVItem("高欢欢"));
         data.add(new PicRVItem("喜欢"));
         data.add(new PicRVItem("wjy"));
+        PicFileTool.writeToFile(this,"test",data);
+        */
+        data = PicFileTool.readFromFile(this,"test");
         adapter = new PicRVAdapter(data);
         picRecycletView.setLayoutManager(new LinearLayoutManager(this));
         picRecycletView.setAdapter(adapter);
@@ -188,4 +218,50 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
    }
+   
+   //权限区
+   
+   
+   
+   private void  requestRxPermissions()
+   {
+
+       EasyPermissions.requestPermissions(this,
+                                          "本软件需要储存权限",
+                                          R.string.yes,
+                                          R.string.no,
+                                          1,
+                                          Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                          Manifest.permission.READ_EXTERNAL_STORAGE);
+   }
+
+   @Override
+   public void onPermissionsGranted(int p1, List<String> p2)
+   {
+       
+   }
+
+   @Override
+   public void onPermissionsDenied(int requestCode, List<String> perms)
+   {
+       if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+           //Toast.makeText(this, "已拒绝权限" + sb + "并不再询问" , Toast.LENGTH_SHORT).show();
+           new AppSettingsDialog
+               .Builder(this)
+               .setRationale("此功能需要储存权限，否则无法正常使用，是否打开设置")
+               .setPositiveButton("好")
+               .setNegativeButton("不行")
+               .build()
+               .show();
+       }
+       
+   }
+   
+   
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+   
 }

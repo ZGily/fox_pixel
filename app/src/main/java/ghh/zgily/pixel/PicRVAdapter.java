@@ -15,10 +15,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.view.View.OnClickListener;
 import android.util.SparseBooleanArray;
 import android.widget.CompoundButton;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 
 public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
 {
+    private static String path = Environment.getExternalStorageDirectory()+"/Android/data/ghh.zgily.pixel/file/";
+    
     private onItemClick onItemClick;
     
     private List<PicRVItem> itemList;
@@ -52,6 +58,7 @@ public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
         //vh.pic.setBackgroundDrawable(itemList.get(pos).pic);
         final String text = itemList.get(pos).name;
         holder.name.setText(itemList.get(pos).name);
+        holder.pic.setImageBitmap(BitmapFactory.decodeFile(path+itemList.get(pos).pic));
         holder.itemView.setLongClickable(true);
         /*
         holder.itemView.setOnClickListener(new View.OnClickListener(){
