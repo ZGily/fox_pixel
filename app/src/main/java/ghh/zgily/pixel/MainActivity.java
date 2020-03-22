@@ -21,8 +21,10 @@ import android.support.annotation.NonNull;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import ghh.zgily.utils.PicFileTool;
 import android.graphics.Bitmap;
+import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+    public static final String SIZE_KEY = "SIZE";
     RecyclerView picRecycletView;
     FloatingActionButton fab;
     FloatingActionButton fab1;
@@ -168,6 +170,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         checkList.add(String.valueOf(pos));
                         //Toast.makeText(MainActivity.this,"add:"+pos,Toast.LENGTH_SHORT).show();
                     }
+                    }
+                    else
+                    {
+                        try{
+                        Intent intent = new Intent(MainActivity.this,PixelDrawActivity.class);
+                        intent.putExtra(SIZE_KEY,PixelDrawView.PIXEL_SIZE_16X16);
+                        startActivity(intent);
+                        } catch (Exception e)
+                        {
+                            Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
                 @Override

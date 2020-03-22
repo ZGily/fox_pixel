@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.Intent;
 
 
 public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
@@ -87,6 +88,7 @@ public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
                     if (isShouldShowCheckBox) {
                         holder.check.setChecked(!holder.check.isChecked());
                     }
+                    
                     onItemClick.onClick(view,pos);
                 }
             });
