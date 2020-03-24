@@ -2,4 +2,10 @@
     <string name="app_name">Pixel</string>
     <string name="yes">确定</string>
     <string name="no">取消</string>
+    
+    <string-array name="meinv">
+       <item>16X16</item>
+       <item>32X32</item>
+       <item>64X64</item>
+    </string-array>
 </resources>

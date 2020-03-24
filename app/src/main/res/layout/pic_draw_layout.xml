@@ -3,27 +3,60 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    >
-<ghh.zgily.pixel.ZoomView
-    android:layout_height="320dp"
-    android:layout_width="320dp"
-    android:layout_centerInParent="true"
-    >
-	<ghh.zgily.pixel.PixelDrawView
+	android:background="@drawable/bg_drawlayout">
+
+	<android.support.design.widget.AppBarLayout
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+		<android.support.v7.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+	</android.support.design.widget.AppBarLayout>
+
+	<ghh.zgily.pixel.ZoomView
 		android:layout_height="320dp"
 		android:layout_width="320dp"
-		android:id="@+id/mPixelDrawView"
-		android:layout_centerInParent="true"/>
-</ghh.zgily.pixel.ZoomView>
-	<TextView
-		android:layout_width="wrap_content"
+		android:layout_centerInParent="true">
+
+		<ghh.zgily.pixel.PixelDrawView
+			android:layout_height="320dp"
+			android:layout_width="320dp"
+			android:id="@+id/mPixelDrawView"
+			android:layout_centerInParent="true"/>
+
+	</ghh.zgily.pixel.ZoomView>
+
+	<LinearLayout
 		android:layout_height="wrap_content"
-		android:text="Text"
-		android:layout_below="@id/mPixelDrawView"
-		android:layout_centerHorizontal="true"
-        android:id="@+id/mTextView"
+		android:layout_width="match_parent"
+		android:layout_alignParentBottom="true"
+		android:orientation="horizontal"
+		android:gravity="center_vertical"
+        android:layout_margin="20dp">
+        
+        <ghh.zgily.pixel.CircleImageView
+            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:src="#FA1111"
+            android:id="@+id/ImageView"
+            />
+        
+        <ghh.zgily.pixel.CircleImageView
+            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:src="#F2F111"
+            android:id="@+id/ImageView"
+            android:layout_marginLeft="20dp"
         />
+
+	</LinearLayout>
 
 </RelativeLayout>
 

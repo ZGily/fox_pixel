@@ -25,6 +25,7 @@ import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     public static final String SIZE_KEY = "SIZE";
+    public static final String NAME_KEY = "NAME";
     RecyclerView picRecycletView;
     FloatingActionButton fab;
     FloatingActionButton fab1;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private boolean isShowCheck = false;
     
     private List<String> checkList = new ArrayList<>();
+    
+    private MyDialog mDialog;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +124,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 public void onClick(View p1) {
                     if (!isShowCheck)
                     {
-                        data.add(new PicRVItem("i love wjy"));
-                        refreshUI();
-                        PicFileTool.writeToFile(MainActivity.this,"test",data);
-                        fab.callOnClick();
+                        showMyDialog();
+                        //data.add(new PicRVItem("i love wjy"));
+                        
                     }
                 }
             });
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     }
                     else
                     {
+                        
                         try{
                         Intent intent = new Intent(MainActivity.this,PixelDrawActivity.class);
                         intent.putExtra(SIZE_KEY,PixelDrawView.PIXEL_SIZE_16X16);
@@ -181,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         {
                             Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_LONG).show();
                         }
+                        
+                        
                     }
                 }
                 @Override
@@ -230,6 +235,42 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         } else {
             adapter.notifyDataSetChanged();
         }
+   }
+   
+   public void startPicDrawActivity (String name,int size)
+   {
+       try {
+       Intent intent = new Intent(MainActivity.this,PixelDrawActivity.class);
+       intent.putExtra(NAME_KEY,name);
+       intent.putExtra(SIZE_KEY,size);
+       startActivity(intent);
+       }
+       catch (Exception e){
+           Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+       }
+   }
+   
+   
+   public void showMyDialog ()
+   {
+       mDialog=new MyDialog(this, "创建画布", "请选择画布大小", "确定",new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   
+                   mDialog.dismiss();
+                   data.add(new PicRVItem(mDialog.getName()));
+                   refreshUI();
+                   PicFileTool.writeToFile(MainActivity.this,"data",data);
+                   fab.callOnClick();
+                   startPicDrawActivity(mDialog.getName(),mDialog.getDrawSize());
+                   //Toast.makeText(MainActivity.this,"退出了--伤心",Toast.LENGTH_LONG).show();
+               }
+           },"取消");
+       //mDialog.setCanotBackPress();
+       mDialog.setCancelable(true);
+       mDialog.setCanceledOnTouchOutside(false);
+       mDialog.show();
+       
    }
    
    //权限区

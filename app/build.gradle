@@ -23,5 +23,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:27.1.1'
 	compile 'com.android.support:design:27.1.1'
     compile 'pub.devrel:easypermissions:0.4.2'
+    implementation 'com.github.JawenChuang:simplecolorpickerdialog:v1.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
