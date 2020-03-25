@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Region;
+import android.view.View;
 
 /**
  * 
@@ -24,25 +25,26 @@ import android.graphics.Region;
  * 
  * 
  */
-public class CircleImageView extends ImageView {
+public class ColorView extends View {
 
     Path path;
     public PaintFlagsDrawFilter mPaintFlagsDrawFilter;// 毛边过滤
     Paint paint;
+    private int color = Color.RED;
 
-    public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
+    public ColorView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         // TODO Auto-generated constructor stub
         init();
     }
 
-    public CircleImageView(Context context, AttributeSet attrs) {
+    public ColorView(Context context, AttributeSet attrs) {
         super(context, attrs);
         // TODO Auto-generated constructor stub
         init();
     }
 
-    public CircleImageView(Context context) {
+    public ColorView(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
         init();
@@ -54,8 +56,21 @@ public class CircleImageView extends ImageView {
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.TRANSPARENT);
+        this.setClickable(true);
+        this.setLongClickable(true);
 
+    }
+    
+    public int getColor()
+    {
+        return this.color;
+    }
+    
+    public void setColor(int color)
+    {
+        this.color = color;
+        invalidate();
     }
 
     @Override
@@ -63,6 +78,7 @@ public class CircleImageView extends ImageView {
         // TODO Auto-generated method stub
         float h = getMeasuredHeight();
         float w = getMeasuredWidth();
+        /*
         if (path == null) {
             path = new Path();
             path.addCircle(w / 2.0f, h / 2.0f,
@@ -70,20 +86,17 @@ public class CircleImageView extends ImageView {
             path.close();
         }
         cns.drawCircle(w / 2.0f, h / 2.0f, Math.min(w / 2.0f, h / 2.0f), paint);
-        /*
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(5);
-        cns.drawCircle(w / 2.0f, h / 2.0f, Math.min(w / 2.0f, h / 2.0f), paint);
-        */
         int saveCount = cns.getSaveCount();
         cns.save();
         cns.setDrawFilter(mPaintFlagsDrawFilter);
         cns.clipPath(path, Region.Op.REPLACE);
         cns.setDrawFilter(mPaintFlagsDrawFilter);
-        cns.drawColor(Color.WHITE);
+        cns.drawColor(Color.TRANSPARENT);
         super.onDraw(cns);
         cns.restoreToCount(saveCount);
+        */
+        paint.setColor(color);
+        cns.drawCircle(w / 2.0f, h / 2.0f, Math.min(w / 2.0f, h / 2.0f),paint);
     }
 
 }

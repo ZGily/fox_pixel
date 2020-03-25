@@ -38,6 +38,8 @@ public class PixelDrawView extends  View {
     
     private boolean isShouldShowLine = true;
     
+    private boolean isMoveDrawable = false;
+    
     private int width;
     
     private int height;
@@ -76,6 +78,10 @@ public class PixelDrawView extends  View {
         
         mPixelCanvas = new Canvas();
         
+        mPixelPaint.setStyle(Paint.Style.FILL);
+        mPixelPaint.setStrokeWidth(2);
+        mPixelPaint.setColor(Color.RED);
+        
         mLinePaint.setColor(Color.BLACK);
         mLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mLinePaint.setStrokeWidth(2);
@@ -98,7 +104,7 @@ public class PixelDrawView extends  View {
             mLinePath.lineTo(width,i*side);
         }
         
-        Toast.makeText(this.getContext(),""+side,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this.getContext(),""+side,Toast.LENGTH_SHORT).show();
         //mLinePath.addRect(0,0,800,800,Path.Direction.CW);
         invalidate();
         
@@ -114,11 +120,16 @@ public class PixelDrawView extends  View {
         this.isShouldShowLine = status;
     }
     
+    public void setPixelPaintColor (int color)
+    {
+        mPixelPaint.setColor(color);
+    }
+    
     public RectF getPixelPoint (float x,float y)
     {
         int x_p =(int) ( x / side);
         int y_p = (int) (y / side);
-        Toast.makeText(this.getContext(),""+x_p+" "+y_p,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this.getContext(),""+x_p+" "+y_p,Toast.LENGTH_SHORT).show();
         return new RectF(x_p*side,y_p*side,(x_p+1)*side,(y_p+1)*side);
     }
     
@@ -131,6 +142,12 @@ public class PixelDrawView extends  View {
     {
         return null;
     }
+    
+    public void setIsMoveView (boolean status)
+    {
+        isMoveDrawable = status;
+    }
+    
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -143,15 +160,19 @@ public class PixelDrawView extends  View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.WHITE);
+        canvas.drawPath(mTempPath,mPixelPaint);
         canvas.drawPath(mLinePath,mLinePaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isMoveDrawable)
+            return false;
         float x = event.getX();
         float y = event.getY();
-        getPixelPoint(x,y);
-        return super.onTouchEvent(event);
+        mTempPath.addRect(getPixelPoint(x,y),Path.Direction.CW);
+        invalidate();
+        return true;
     }
     
 }

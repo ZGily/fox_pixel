@@ -10,7 +10,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentTop="true"
-		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:id="@+id/pic_AppBarLayout">
 
 		<android.support.v7.widget.Toolbar
 			android:id="@+id/toolbar"
@@ -19,7 +20,48 @@
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
 	</android.support.design.widget.AppBarLayout>
-
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_gravity="center_vertical"
+    android:orientation="horizontal"
+    android:layout_below="@id/pic_AppBarLayout"
+    android:layout_marginTop="20dp"
+    android:weightSum="4.0"
+    >
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_undo"
+        android:layout_weight="1.0"
+        android:layout_margin="20dp"
+        android:id="@+id/pic_undo_fab"
+    />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_move"
+        android:layout_weight="1.0"
+        android:layout_margin="20dp"
+        android:id="@+id/pic_move_fab"
+    />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_save"
+        android:layout_weight="1.0"
+        android:layout_margin="20dp"
+        android:id="@+id/pic_save_fab"
+    />
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_left"
+        android:layout_weight="1.0"
+        android:layout_margin="20dp"
+        android:id="@+id/pic_quit_fab"
+    />
+</LinearLayout>
 	<ghh.zgily.pixel.ZoomView
 		android:layout_height="320dp"
 		android:layout_width="320dp"
@@ -32,31 +74,88 @@
 			android:layout_centerInParent="true"/>
 
 	</ghh.zgily.pixel.ZoomView>
-
+<LinearLayout
+    android:layout_alignParentBottom="true"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 	<LinearLayout
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		android:layout_alignParentBottom="true"
 		android:orientation="horizontal"
 		android:gravity="center_vertical"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:weightSum="4.0">
         
-        <ghh.zgily.pixel.CircleImageView
+        <ghh.zgily.pixel.ColorView
             android:layout_height="48dp"
-            android:layout_width="48dp"
-            android:src="#FA1111"
-            android:id="@+id/ImageView"
-            />
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView1"
+            android:layout_weight="1.0"
+        />
+    
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView2"
+            android:layout_weight="1.0"
+        />
+    
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView3"
+            android:layout_weight="1.0"
+        />
+    
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView4"
+            android:layout_weight="1.0"
+        />
         
-        <ghh.zgily.pixel.CircleImageView
+       
+
+	</LinearLayout >
+    
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:weightSum="4.0">
+
+        <ghh.zgily.pixel.ColorView
             android:layout_height="48dp"
-            android:layout_width="48dp"
-            android:src="#F2F111"
-            android:id="@+id/ImageView"
-            android:layout_marginLeft="20dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView5"
+            android:layout_weight="1.0"
         />
 
-	</LinearLayout>
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView6"
+            android:layout_weight="1.0"
+        />
 
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView7"
+            android:layout_weight="1.0"
+        />
+
+        <ghh.zgily.pixel.ColorView
+            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:id="@+id/pic_ColorView8"
+            android:layout_weight="1.0"
+        />
+	</LinearLayout>
+</LinearLayout>
 </RelativeLayout>
 

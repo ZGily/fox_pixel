@@ -23,13 +23,14 @@ import ghh.zgily.utils.PicFileTool;
 import android.graphics.Bitmap;
 import android.content.Intent;
 
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,View.OnClickListener,PicRVAdapter.onItemClick {
+    
     public static final String SIZE_KEY = "SIZE";
     public static final String NAME_KEY = "NAME";
     RecyclerView picRecycletView;
     FloatingActionButton fab;
-    FloatingActionButton fab1;
-    FloatingActionButton fab2;
+    FloatingActionButton mOpenDeleteFab;
+    FloatingActionButton mAddExportFab;
     boolean isSubFabShow = false;
     Toolbar toolbar;
     
@@ -51,31 +52,33 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         
 		toolbar=(Toolbar)findViewById(R.id.toolbar);
         picRecycletView = (RecyclerView) findViewById(R.id.recyclerview);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab1.hide();
-        fab2.hide();
+        fab = (FloatingActionButton) findViewById(R.id.MainFab);
+        mOpenDeleteFab = (FloatingActionButton) findViewById(R.id.SubFabDown);
+        mAddExportFab = (FloatingActionButton) findViewById(R.id.SubFabUp);
+        mOpenDeleteFab.hide();
+        mAddExportFab.hide();
 		setSupportActionBar(toolbar);
+        fab.setOnClickListener(this);
+        /*
         fab.setOnClickListener(new OnClickListener(){
                 @Override
                 public void onClick(View p1) {
                     //Snackbar.make(p1,"Hello",Snackbar.LENGTH_LONG).show();
                     if (isShowCheck)
                     {
-                        fab1.setImageResource(R.drawable.ic_delete);
-                        fab2.setImageResource(R.drawable.ic_export);
+                        mOpenDeleteFab.setImageResource(R.drawable.ic_delete);
+                        mAddExportFab.setImageResource(R.drawable.ic_export);
                     }
                     else
                     {
-                        fab1.setImageResource(R.drawable.ic_open);
-                        fab2.setImageResource(R.drawable.ic_add);
+                        mOpenDeleteFab.setImageResource(R.drawable.ic_open);
+                        mAddExportFab.setImageResource(R.drawable.ic_add);
                     }
                     
                     if (isSubFabShow)
                     {
-                        fab1.hide();
-                        fab2.hide();
+                        mOpenDeleteFab.hide();
+                        mAddExportFab.hide();
                         fab.setRotation(0);
                         if (isShowCheck)
                         {
@@ -87,14 +90,15 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     }
                     else
                     {
-                        fab1.show();
-                        fab2.show();
+                        mOpenDeleteFab.show();
+                        mAddExportFab.show();
                         fab.setRotation(180);
                     }
                     isSubFabShow = !isSubFabShow;
                 }
             });
-        fab1.setOnClickListener(new View.OnClickListener(){
+            */
+        mOpenDeleteFab.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p1) {
                     if (isShowCheck)
@@ -113,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         ++haveDelete;
                     }
                     refreshUI();
-                    PicFileTool.writeToFile(MainActivity.this,"test",data);
+                    PicFileTool.writeToFile(MainActivity.this,"data",data);
                     fab.callOnClick();
                     }
                 }
             });
             
-        fab2.setOnClickListener(new View.OnClickListener(){
+        mAddExportFab.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p1) {
                     if (!isShowCheck)
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         data.add(new PicRVItem("wjy"));
         PicFileTool.writeToFile(this,"test",data);
         */
-        data = PicFileTool.readFromFile(this,"test");
+        data = PicFileTool.readFromFile(this,"data");
         adapter = new PicRVAdapter(data);
         picRecycletView.setLayoutManager(new LinearLayoutManager(this));
         picRecycletView.setAdapter(adapter);
@@ -273,6 +277,95 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
        
    }
    
+   public void hideSubActionButton()
+   {
+       if (isShowCheck)
+       {
+           isShowCheck = !isShowCheck;
+           adapter.setShouldShowCheckBox(false);
+           refreshUI();
+       }
+           checkList.clear();
+       mOpenDeleteFab.hide();
+       mAddExportFab.hide();
+       fab.setRotation(0);
+   }
+   
+   public void showSubActionButton()
+   {
+       mOpenDeleteFab.show();
+       mAddExportFab.show();
+       fab.setRotation(180);
+   }
+   
+   public void setActionButtonShowImage ()
+   {
+       if (isShowCheck)
+       {
+           mOpenDeleteFab.setImageResource(R.drawable.ic_delete);
+           mAddExportFab.setImageResource(R.drawable.ic_export);
+           //isShowCheck = !isShowCheck;
+       }
+       else
+       {
+           mOpenDeleteFab.setImageResource(R.drawable.ic_open);
+           mAddExportFab.setImageResource(R.drawable.ic_add);
+       }
+   }
+   
+   public void onMainButtonClick()
+   {
+       setActionButtonShowImage();
+       if (isSubFabShow)
+           hideSubActionButton();
+       else
+           showSubActionButton();
+       isSubFabShow = !isSubFabShow;
+   }
+   
+   public void onAddButtonClick ()
+   {
+       
+   }
+   
+   public void onDeleteButtonClick ()
+   {
+       
+   }
+   
+   public void onExportButtonClick()
+   {
+       
+   }
+   
+   public void onOpenButtonClick()
+   {
+       
+   }
+
+   //View.OnClickListener
+   
+   @Override
+   public void onClick(View view)
+   {
+       switch (view.getId())
+       {
+           case R.id.MainFab:
+               onMainButtonClick();
+               break;
+       }
+   }
+
+    @Override
+    public void onClick(View view, int pos) {
+    }
+
+    @Override
+    public boolean onLongClick(View view, int pos) {
+        return false;
+    }
+   
+   
    //权限区
    
    
@@ -310,7 +403,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
        }
        
    }
-   
    
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

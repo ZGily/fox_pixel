@@ -1,84 +1,114 @@
 package ghh.zgily.pixel;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import com.jwchuang.colorpickerdialog.SimpleColorPickerDialog;
-import com.jwchuang.colorpickerdialog.ColorPickerDialogListener;
-import android.support.annotation.ColorInt;
+import android.view.View;
 import android.graphics.Color;
-import android.text.SpannableString;
+import android.widget.Toast;
 
-public class PixelDrawActivity extends AppCompatActivity {
-
-    private static final int DIALGE_ID = 520;
+public class PixelDrawActivity extends AppCompatActivity implements View.OnClickListener , View.OnLongClickListener {
     
     private PixelDrawView mPixelDrawView;
+    private FloatingActionButton mUndoFab;
+    private FloatingActionButton mMoveDrawFab;
+    private FloatingActionButton mSaveFab;
+    private FloatingActionButton mQuitFab;
+    private ColorView mColorView1;
+    private ColorView mColorView2;
+    private ColorView mColorView3;
+    private ColorView mColorView4;
+    private ColorView mColorView5;
+    private ColorView mColorView6;
+    private ColorView mColorView7;
+    private ColorView mColorView8;
+    
+    private boolean isMovePixelDrawView = false;
+    
     int pic_size = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
         setContentView(R.layout.pic_draw_layout);
+        
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        try {
-        pic_size = getIntent().getExtras().getInt(MainActivity.SIZE_KEY);
         mPixelDrawView = (PixelDrawView) findViewById(R.id.mPixelDrawView);
+        mUndoFab = (FloatingActionButton) findViewById(R.id.pic_undo_fab);
+        mMoveDrawFab = (FloatingActionButton) findViewById(R.id.pic_move_fab);
+        mSaveFab = (FloatingActionButton) findViewById(R.id.pic_save_fab);
+        mQuitFab = (FloatingActionButton) findViewById(R.id.pic_quit_fab);
+        mColorView1 = (ColorView) findViewById(R.id.pic_ColorView1);
+        mColorView2 = (ColorView) findViewById(R.id.pic_ColorView2);
+        mColorView3 = (ColorView) findViewById(R.id.pic_ColorView3);
+        mColorView4 = (ColorView) findViewById(R.id.pic_ColorView4);
+        mColorView5 = (ColorView) findViewById(R.id.pic_ColorView5);
+        mColorView6 = (ColorView) findViewById(R.id.pic_ColorView6);
+        mColorView7 = (ColorView) findViewById(R.id.pic_ColorView7);
+        mColorView8 = (ColorView) findViewById(R.id.pic_ColorView8);
+        
+        setSupportActionBar(toolbar);
+        mUndoFab.setOnClickListener(this);
+        mMoveDrawFab.setOnClickListener(this);
+        mSaveFab.setOnClickListener(this);
+        mQuitFab.setOnClickListener(this);
+        mColorView1.setOnClickListener(this);
+        mColorView2.setOnClickListener(this);
+        mColorView3.setOnClickListener(this);
+        mColorView4.setOnClickListener(this);
+        mColorView5.setOnClickListener(this);
+        mColorView6.setOnClickListener(this);
+        mColorView7.setOnClickListener(this);
+        mColorView8.setOnClickListener(this);
+        mColorView1.setOnLongClickListener(this);
+        mColorView2.setOnLongClickListener(this);
+        mColorView3.setOnLongClickListener(this);
+        mColorView4.setOnLongClickListener(this);
+        mColorView5.setOnLongClickListener(this);
+        mColorView6.setOnLongClickListener(this);
+        mColorView7.setOnLongClickListener(this);
+        mColorView8.setOnLongClickListener(this);
+        
+        pic_size = getIntent().getExtras().getInt(MainActivity.SIZE_KEY);
+        
         mPixelDrawView.setPixelNumber(pic_size);
-        } catch (Exception e){
-            Toast.makeText(PixelDrawActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-        }
-        } catch( Exception e){
-            Toast.makeText(PixelDrawActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-        }
-        showColorDialog();
     }
-    /**
-     * define dialog func
-     */
-    private void showColorDialog() {
-        SimpleColorPickerDialog colorPickerDialog = SimpleColorPickerDialog.newBuilder()
-            //set default color
-            .setColor(0xFFFFEB3B)
-            //set titile
-            .setDialogTitle(R.string.app_name)
-            //set presets / custom mode
-            .setDialogType(SimpleColorPickerDialog.TYPE_PRESETS)
-            //show alpha slider
-            .setShowAlphaSlider(true)
-            //set callbasck id
-            .setDialogId(DIALGE_ID)
-            //set if enable custom
-            .setAllowCustom(true)
-            //set preset colors
-            //.setPresets(MY_COLORS)
-            //set preset enabled
-            .setAllowPresets(false)
-            .create();
-        colorPickerDialog.setColorPickerDialogListener(pickerDialogListener);
-        colorPickerDialog.show(getFragmentManager(), "color-dialog");
     
-}
-
-    /**
-     * callback for select event
-     */
-    private ColorPickerDialogListener pickerDialogListener = new ColorPickerDialogListener() {
-        @Override
-        public void onColorSelected(int dialogId, @ColorInt int color) {
-            if (dialogId == DIALGE_ID) {
-                //SpannableString sstr = new SpannableString("这是颜色");
-                Toast.makeText(PixelDrawActivity.this,""+color,5000).show();
-            }
-        }
-
-        @Override
-        public void onDialogDismissed(int dialogId) {
-            if (dialogId == DIALGE_ID) {
-
-            }
-        }
-    };
     
+    @Override
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.pic_undo_fab:
+                
+                break;
+            case R.id.pic_move_fab:
+                isMovePixelDrawView = !isMovePixelDrawView;
+                mPixelDrawView.setIsMoveView(isMovePixelDrawView);
+                break;
+            case R.id.pic_save_fab:
+                
+                break;
+            case R.id.pic_quit_fab:
+                finish();
+                break;
+           default :
+               
+               break;
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view)
+    {
+        ColorView v = (ColorView) view;
+        v.setColor(Color.YELLOW);
+        return false;
+    }
+    
+    private void log(Exception e)
+    {
+        Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show();
+    }
+     
 }
