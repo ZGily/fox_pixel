@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.graphics.RectF;
 import android.graphics.Color;
 import android.widget.Toast;
+import android.graphics.BitmapFactory;
 
 public class PixelDrawView extends  View {
     public static final int PIXEL_SIZE_16X16 = 16;
@@ -29,7 +30,6 @@ public class PixelDrawView extends  View {
     
     private Canvas mPixelCanvas;
     
-    private Bitmap mTempBitmap;
     private Bitmap mPixelBitmap;
     
     private Context context;
@@ -40,9 +40,15 @@ public class PixelDrawView extends  View {
     
     private boolean isMoveDrawable = false;
     
+    private boolean isTouching = false;
+    
     private int width;
     
     private int height;
+    
+    private int mStepCounter = -1;
+    
+    private int[][] mPixelPic = new int[128][128];
     
     private float side;
     
@@ -67,7 +73,7 @@ public class PixelDrawView extends  View {
         this.context = context;
     }
 
-    public void initView()
+    private void initView()
     {
         mLinePaint = new Paint();
         mPixelPaint = new Paint();
@@ -88,10 +94,10 @@ public class PixelDrawView extends  View {
         
         mPixelPaint.setColor(Color.BLACK);
         
-        
+        this.setDrawingCacheEnabled(true);
     }
     
-    public void initLinePath ()
+    private void initLinePath ()
     {
         side =( (float) width) / mPixelNumber;
         //if (mLinePath.isEmpty())
@@ -118,6 +124,7 @@ public class PixelDrawView extends  View {
     public void setShouldShowLine(boolean status)
     {
         this.isShouldShowLine = status;
+        invalidate();
     }
     
     public void setPixelPaintColor (int color)
@@ -125,7 +132,7 @@ public class PixelDrawView extends  View {
         mPixelPaint.setColor(color);
     }
     
-    public RectF getPixelPoint (float x,float y)
+    private RectF getPixelPoint (float x,float y)
     {
         int x_p =(int) ( x / side);
         int y_p = (int) (y / side);
@@ -133,19 +140,110 @@ public class PixelDrawView extends  View {
         return new RectF(x_p*side,y_p*side,(x_p+1)*side,(y_p+1)*side);
     }
     
-    public Path getPixelCircle (RectF recct)
+    private void getPixelArray()
+    {
+        Bitmap bitmap = getDrawingCache();
+        float half = side / 2;
+        for (int x=0;x<mPixelNumber;++x)
+        {
+            for (int y=0;y<mPixelNumber;++y)
+            {
+                int p = bitmap.getPixel((int)(x*side+half),(int)(y*side+half));
+                if (p==Color.WHITE)
+                {
+                    mPixelPic[x][y] = Color.TRANSPARENT;
+                }
+                else
+                {
+                    mPixelPic[x][y] = p;
+                }
+            }
+        }
+    }
+    
+    public List<PixelPathItem> getPixelPathList()
+    {
+        return this.mPixelPathList;
+    }
+    /*
+    private int getPixelX(float x)
+    {
+        int x_p =(int) ( x / side);
+        return x_p;
+    }
+    
+    private int getPixelY(float y)
+    {
+        int y_p = (int) (y / side);
+        return y_p;
+    }
+    */
+    /*
+    private Path getPixelCircle (RectF recct)
     {
         return null;
     }
     
-    public Path getCanvasLinePath ()
+    private Path getCanvasLinePath ()
     {
         return null;
+    }
+    */
+    public Bitmap getDrawPicture ()
+    {
+        getPixelArray();
+        Bitmap bitmap = Bitmap.createBitmap(mPixelNumber,mPixelNumber,Bitmap.Config.ARGB_8888);
+        for (int x = 0;x<mPixelNumber;++x)
+            for (int y = 0;y<mPixelNumber;++y)
+                bitmap.setPixel(x,y,mPixelPic[x][y]);
+        return bitmap;
     }
     
     public void setIsMoveView (boolean status)
     {
         isMoveDrawable = status;
+    }
+    
+    public void undoLastestDraw()
+    {
+        if (mStepCounter<0)
+        {
+            Toast.makeText(context,"不能再往前撤销了ヾ(･ε･｀*)",Toast.LENGTH_LONG).show();
+            return;
+        }
+        mPixelPathList.remove(mStepCounter);
+        mStepCounter--;
+        invalidate();
+    }
+    /*
+    public void setPixelPoint(int x,int y,int color)
+    {
+        mPixelPic[x][y] = color;
+    }
+    */
+    private void onTouchStart(RectF rect)
+    {
+        mTempPath .addRect(rect,Path.Direction.CW);
+        isTouching = true;
+    }
+    
+    private void onTouchEnd()
+    {
+        ++mStepCounter;
+        isTouching = false;
+        Paint paint = new Paint();
+        paint.set(mPixelPaint);
+        mPixelPathList.add(new PixelPathItem(mTempPath,paint));
+        mTempPath = new Path();
+        invalidate();
+    }
+    
+    private void redraw(Canvas cns)
+    {
+        for (PixelPathItem item:mPixelPathList)
+        {
+            cns.drawPath(item.pixelPath,item.pixelPaint);
+        }
     }
     
 
@@ -160,8 +258,11 @@ public class PixelDrawView extends  View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.WHITE);
-        canvas.drawPath(mTempPath,mPixelPaint);
-        canvas.drawPath(mLinePath,mLinePaint);
+        redraw(canvas);
+        if (isTouching)
+            canvas.drawPath(mTempPath,mPixelPaint);
+        if (isShouldShowLine)
+            canvas.drawPath(mLinePath,mLinePaint);
     }
 
     @Override
@@ -170,6 +271,19 @@ public class PixelDrawView extends  View {
             return false;
         float x = event.getX();
         float y = event.getY();
+        RectF rect = getPixelPoint(x,y);
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                onTouchStart(rect);
+                break;
+            case MotionEvent.ACTION_UP:
+                onTouchStart(rect);
+                onTouchEnd();
+                return true;
+        }
+        //setPixelPoint(getPixelX(x),getPixelY(y),mPixelPaint.getColor());
         mTempPath.addRect(getPixelPoint(x,y),Path.Direction.CW);
         invalidate();
         return true;
