@@ -11,6 +11,7 @@ import ghh.zgily.utils.PicFileTool;
 import android.os.Environment;
 
 public class PicRVItem implements Serializable{
+    public String colorpicker;
     public String pic;
     public String name;
     private static String path = Environment.getExternalStorageDirectory()+"/Android/data/ghh.zgily.pixel/file/";

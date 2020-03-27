@@ -27,22 +27,32 @@
     android:orientation="horizontal"
     android:layout_below="@id/pic_AppBarLayout"
     android:layout_marginTop="20dp"
-    android:weightSum="4.0"
+    android:weightSum="5.0"
     >
     <android.support.design.widget.FloatingActionButton
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_undo"
         android:layout_weight="1.0"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:id="@+id/pic_undo_fab"
     />
+    
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_line"
+        android:layout_weight="1.0"
+        android:layout_margin="10dp"
+        android:id="@+id/pic_line_fab"
+    />
+
     <android.support.design.widget.FloatingActionButton
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_move"
         android:layout_weight="1.0"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:id="@+id/pic_move_fab"
     />
     <android.support.design.widget.FloatingActionButton
@@ -50,7 +60,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_save"
         android:layout_weight="1.0"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:id="@+id/pic_save_fab"
     />
     <android.support.design.widget.FloatingActionButton
@@ -58,7 +68,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_left"
         android:layout_weight="1.0"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:id="@+id/pic_quit_fab"
     />
 </LinearLayout>

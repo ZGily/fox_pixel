@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import ghh.zgily.utils.PicFileTool;
+import ghh.zgily.colorpicker.ColorPickerDialog;
 
-public class PixelDrawActivity extends AppCompatActivity implements View.OnClickListener , View.OnLongClickListener {
+public class PixelDrawActivity extends AppCompatActivity implements View.OnClickListener , View.OnLongClickListener,ColorPickerDialog.OnColorPickedListener {
+    
     
     private PixelDrawView mPixelDrawView;
     private FloatingActionButton mUndoFab;
+    private FloatingActionButton mLineFab;
     private FloatingActionButton mMoveDrawFab;
     private FloatingActionButton mSaveFab;
     private FloatingActionButton mQuitFab;
@@ -26,8 +29,12 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
     private ColorView mColorView6;
     private ColorView mColorView7;
     private ColorView mColorView8;
+    private ColorView mTempColorView;
+    
+    private ColorPickerDialog mColorPickerDialog;
     
     private boolean isMovePixelDrawView = false;
+    private boolean isShouldShowLine = true;
     
     private ArrayList<Integer> defColorList = new ArrayList<Integer>();
     
@@ -42,6 +49,7 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
         mPixelDrawView = (PixelDrawView) findViewById(R.id.mPixelDrawView);
         mUndoFab = (FloatingActionButton) findViewById(R.id.pic_undo_fab);
+        mLineFab = (FloatingActionButton) findViewById(R.id.pic_line_fab);
         mMoveDrawFab = (FloatingActionButton) findViewById(R.id.pic_move_fab);
         mSaveFab = (FloatingActionButton) findViewById(R.id.pic_save_fab);
         mQuitFab = (FloatingActionButton) findViewById(R.id.pic_quit_fab);
@@ -58,6 +66,7 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         
         setSupportActionBar(toolbar);
         mUndoFab.setOnClickListener(this);
+        mLineFab.setOnClickListener(this);
         mMoveDrawFab.setOnClickListener(this);
         mSaveFab.setOnClickListener(this);
         mQuitFab.setOnClickListener(this);
@@ -83,6 +92,7 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         mPixelDrawView.setPixelNumber(pic_size);
         
         PicFileTool.writeColorListToFile(this,"defColorList",defColorList);
+            
     }
     
     public void initDefColorList()
@@ -124,6 +134,16 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         return mColorList;
     }
     
+    public void showColorPickerDialog (int defColor)
+    {
+        mColorPickerDialog = new ColorPickerDialog.Builder(this,defColor)
+            .setOnColorPickedListener(this)
+            .setHexValueEnabled(true)
+            .build();
+        mColorPickerDialog.show();
+        return;
+    }
+    
     @Override
     public void onClick(View view)
     {
@@ -131,6 +151,18 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         {
             case R.id.pic_undo_fab:
                 mPixelDrawView.undoLastestDraw();
+                break;
+            case R.id.pic_line_fab:
+                isShouldShowLine = !isShouldShowLine;
+                mPixelDrawView.setShouldShowLine(isShouldShowLine);
+                if (!isShouldShowLine)
+                {
+                    mLineFab.setBackgroundTintList(ColorStateList.valueOf(0xFF43CBFF));
+                }
+                else
+                {
+                    mLineFab.setBackgroundTintList(ColorStateList.valueOf(0xFFF07C82));
+                }
                 break;
             case R.id.pic_move_fab:
                 isMovePixelDrawView = !isMovePixelDrawView;
@@ -165,10 +197,18 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onLongClick(View view)
     {
-        ColorView v = (ColorView) view;
-        v.setColor(Color.YELLOW);
-        return false;
+        mTempColorView = (ColorView) view;
+        showColorPickerDialog(mTempColorView.getColor());
+        return true;
     }
+
+    @Override
+    public void onColorPicked(int color)
+    {
+        mTempColorView.setColor(color);
+        mPixelDrawView.setPixelPaintColor(color);
+    }
+    
     
     private void log(Exception e)
     {
