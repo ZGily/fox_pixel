@@ -14,13 +14,16 @@ import android.graphics.RectF;
 import android.graphics.Color;
 import android.widget.Toast;
 import android.graphics.BitmapFactory;
+import ghh.zgily.struct.PicBitmap;
+import ghh.zgily.utils.PicFileTool;
 
 public class PixelDrawView extends  View {
     public static final int PIXEL_SIZE_16X16 = 16;
     public static final int PIXEL_SIZE_32X32 = 32;
     public static final int PIXEL_SIZE_64X64 = 64;
     //public static final int PIXEL_SIZE_128X128 = 128;
-    
+    public static final String BIT_PIC = ".bp";
+    public String filename = "ilovewjy";
     private Paint mLinePaint; //draw line paint
     private Paint mPixelPaint; //draw pixel
     
@@ -57,6 +60,7 @@ public class PixelDrawView extends  View {
         super(context);
         initView();
         this.context = context;
+        filename = PixelDrawActivity.filename;
     }
 
     public PixelDrawView (Context context,AttributeSet attts)
@@ -64,6 +68,7 @@ public class PixelDrawView extends  View {
         super(context,attts);
         initView();
         this.context = context;
+        filename = PixelDrawActivity.filename;
     }
 
     public PixelDrawView (Context context,AttributeSet attrs,int defStyleAttrs)
@@ -71,6 +76,7 @@ public class PixelDrawView extends  View {
         super(context,attrs,defStyleAttrs);
         initView();
         this.context = context;
+        filename = PixelDrawActivity.filename;
     }
 
     private void initView()
@@ -114,6 +120,12 @@ public class PixelDrawView extends  View {
         //mLinePath.addRect(0,0,800,800,Path.Direction.CW);
         invalidate();
         
+    }
+    
+    public void setDrawPathList(List<PixelPathItem> pl)
+    {
+        this.mPixelPathList = pl;
+        invalidate();
     }
     
     public void setPixelNumber (int size)
@@ -161,10 +173,44 @@ public class PixelDrawView extends  View {
         }
     }
     
+    public void setFileName(String name)
+    {
+        this.filename = name;
+        //this.loadPictureFromBitmap(PicFileTool.readBitmapFromJsonFile(context,filename+BIT_PIC));
+        //invalidate();
+    }
+    
+    
+    public void loadPictureFromBitmap(Bitmap bitmap)
+    {
+        if (bitmap==null)
+            return;
+        int length = bitmap.getWidth();
+        for (int x=0;x<length;++x)
+            for (int y=0;y<length;++y)
+            {
+                int p_c = bitmap.getPixel(x,y);
+                if (p_c==Color.WHITE||p_c==Color.TRANSPARENT)
+                    continue;
+                Path temp = new Path();
+                Paint paint = new Paint();
+                paint.setStyle(Paint.Style.FILL);
+                paint.setStrokeWidth(2);
+                temp.addRect(new RectF(x*side,y*side,(x+1)*side,(y+1)*side),Path.Direction.CW);
+                paint.setColor(p_c);
+                mPixelPathList.add(new PixelPathItem(temp,paint));
+                ++mStepCounter;
+            }
+       //Toast.makeText(context,"绘制成功"+mPixelPathList.size(),Toast.LENGTH_LONG).show();
+       invalidate();
+    }
+    
+    /*
     public List<PixelPathItem> getPixelPathList()
     {
         return this.mPixelPathList;
     }
+    */
     /*
     private int getPixelX(float x)
     {
@@ -242,7 +288,7 @@ public class PixelDrawView extends  View {
     {
         for (PixelPathItem item:mPixelPathList)
         {
-            cns.drawPath(item.pixelPath,item.pixelPaint);
+            cns.drawPath(item.getPixelPath(),item.getPixelPaint());
         }
     }
     
@@ -252,6 +298,7 @@ public class PixelDrawView extends  View {
         super.onLayout(changed, left, top, right, bottom);
         width = getWidth();
         height = getHeight();
+        this.loadPictureFromBitmap(PicFileTool.readBitmapFromJsonFile(context,filename+BIT_PIC));
         initLinePath();
     }
     @Override

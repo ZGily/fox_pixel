@@ -11,9 +11,16 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import ghh.zgily.utils.PicFileTool;
 import ghh.zgily.colorpicker.ColorPickerDialog;
+import ghh.zgily.struct.PicBitmap;
+import ghh.zgily.struct.PixelPathItem;
+import java.util.List;
+import android.graphics.BitmapRegionDecoder;
 
 public class PixelDrawActivity extends AppCompatActivity implements View.OnClickListener , View.OnLongClickListener,ColorPickerDialog.OnColorPickedListener {
     
+    public static final String COLOR_PICKER = ".cp";
+    public static final String PATH_LIST = ".pl";
+    public static final String BIT_PIC = ".bp";
     
     private PixelDrawView mPixelDrawView;
     private FloatingActionButton mUndoFab;
@@ -35,6 +42,7 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
     
     private boolean isMovePixelDrawView = false;
     private boolean isShouldShowLine = true;
+    public static String filename = "ilovewjy";
     
     private ArrayList<Integer> defColorList = new ArrayList<Integer>();
     
@@ -88,10 +96,24 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         mColorView8.setOnLongClickListener(this);
         
         pic_size = getIntent().getExtras().getInt(MainActivity.SIZE_KEY);
+        filename = getIntent().getExtras().getString(MainActivity.NAME_KEY);
         
         mPixelDrawView.setPixelNumber(pic_size);
+        mPixelDrawView.setFileName(filename);
         
-        PicFileTool.writeColorListToFile(this,"defColorList",defColorList);
+        //mPixelDrawView.getDrawPicture();
+        //setDrawPathList(PicFileTool.readPathListFromFile(this,filename+PATH_LIST));
+        //setColorList(PicFileTool.readColorListFromFile(this,filename+COLOR_PICKER));
+
+        /*
+        try {
+        mPixelDrawView.loadPictureFromBitmap(PicFileTool.readBitMapFromFile(this,filename+BIT_PIC));
+        } catch (Exception e)
+        {
+            log(e);
+        }
+        */
+        //PicFileTool.writeColorListToFile(this,"defColorList",defColorList);
             
     }
     
@@ -144,6 +166,11 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
         return;
     }
     
+    public void setDrawPathList(List<PixelPathItem> pathList)
+    {
+        mPixelDrawView.setDrawPathList(pathList);
+    }
+    
     @Override
     public void onClick(View view)
     {
@@ -177,12 +204,16 @@ public class PixelDrawActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
             case R.id.pic_save_fab:
+                //PicFileTool.writePathListToFile(this,filename+PATH_LIST,mPixelDrawView.getPixelPathList());
+                //PicFileTool.writeBitMapToFile(this,filename+BIT_PIC,new PicBitmap(mPixelDrawView.getDrawPicture()));
+                PicFileTool.writeColorListToFile(this,filename+COLOR_PICKER,getColorList());
                 try {
-                PicFileTool.saveImage(mPixelDrawView.getDrawPicture(),this);
+                PicFileTool.writePictureJSONObjectToFile(this,filename+BIT_PIC,mPixelDrawView.getDrawPicture());
                 } catch (Exception e)
                 {
                     log(e);
                 }
+                //mPixelDrawView.getDrawPicture();
                 break;
             case R.id.pic_quit_fab:
                 finish();

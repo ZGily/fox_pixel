@@ -22,6 +22,8 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import ghh.zgily.utils.PicFileTool;
 import android.graphics.Bitmap;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,View.OnClickListener,PicRVAdapter.onItemClick {
     
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     
     private MyDialog mDialog;
     
+    
+    int i = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,45 +63,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         mAddExportFab.hide();
 		setSupportActionBar(toolbar);
         fab.setOnClickListener(this);
-        /*
-        fab.setOnClickListener(new OnClickListener(){
-                @Override
-                public void onClick(View p1) {
-                    //Snackbar.make(p1,"Hello",Snackbar.LENGTH_LONG).show();
-                    if (isShowCheck)
-                    {
-                        mOpenDeleteFab.setImageResource(R.drawable.ic_delete);
-                        mAddExportFab.setImageResource(R.drawable.ic_export);
-                    }
-                    else
-                    {
-                        mOpenDeleteFab.setImageResource(R.drawable.ic_open);
-                        mAddExportFab.setImageResource(R.drawable.ic_add);
-                    }
-                    
-                    if (isSubFabShow)
-                    {
-                        mOpenDeleteFab.hide();
-                        mAddExportFab.hide();
-                        fab.setRotation(0);
-                        if (isShowCheck)
-                        {
-                            isShowCheck = !isShowCheck;
-                            adapter.setShouldShowCheckBox(false);
-                            refreshUI();
-                            checkList.clear();
-                        }
-                    }
-                    else
-                    {
-                        mOpenDeleteFab.show();
-                        mAddExportFab.show();
-                        fab.setRotation(180);
-                    }
-                    isSubFabShow = !isSubFabShow;
-                }
-            });
-            */
+        
         mOpenDeleteFab.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p1) {
@@ -113,12 +79,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     int haveDelete = 0;
                     for (int index: poslist)
                     {
+                        PicFileTool.deleteFile(data.get(index-haveDelete).name);
                         data.remove(index-haveDelete);
                         ++haveDelete;
                     }
                     refreshUI();
                     PicFileTool.writeToFile(MainActivity.this,"data",data);
                     fab.callOnClick();
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this,"本功能正在开发中!",Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -132,32 +103,29 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         //data.add(new PicRVItem("i love wjy"));
                         
                     }
+                    else
+                    {
+                        int poslist[] = new int[checkList.size()];
+                        for (String pos : checkList)
+                        {
+                            int i = checkList.indexOf(pos);
+                            poslist[i] = Integer.parseInt(pos);
+                        }
+                        poslist = bubbleSort(poslist);
+                        for (int pos:poslist)
+                        {
+                            Bitmap bitmap = PicFileTool.readBitmapFromJsonFile(data.get(pos).name+".bp");
+                            if (bitmap==null)
+                            {
+                                Toast.makeText(MainActivity.this,"导出之前一定要先保存哦😊",Toast.LENGTH_LONG).show();
+                            }
+                            PicFileTool.saveImage(bitmap,data.get(pos).name);
+                        }
+                        Snackbar.make(fab,"已成功将文件保存在/A_FOX_PIC文件夹😊",Snackbar.LENGTH_LONG).show();
+                    }
                 }
             });
-        /*
-        data = new ArrayList<>();
-        data.add(new PicRVItem("1"));
-        data.add(new PicRVItem("2"));
-        data.add(new PicRVItem("3"));
-        data.add(new PicRVItem("4"));
-        data.add(new PicRVItem("5"));
-        data.add(new PicRVItem("6"));
-        data.add(new PicRVItem("7"));
-        data.add(new PicRVItem("8"));
-        data.add(new PicRVItem("9"));
-        data.add(new PicRVItem("10"));
-        data.add(new PicRVItem("12"));
-        data.add(new PicRVItem("12"));
-        data.add(new PicRVItem("13"));
-        data.add(new PicRVItem("14"));
-        data.add(new PicRVItem("15"));
-        data.add(new PicRVItem("16"));
-        data.add(new PicRVItem("17"));
-        data.add(new PicRVItem("高欢欢"));
-        data.add(new PicRVItem("喜欢"));
-        data.add(new PicRVItem("wjy"));
-        PicFileTool.writeToFile(this,"test",data);
-        */
+        
         data = PicFileTool.readFromFile(this,"data");
         adapter = new PicRVAdapter(data);
         picRecycletView.setLayoutManager(new LinearLayoutManager(this));
@@ -181,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     {
                         
                         try{
-                        Intent intent = new Intent(MainActivity.this,PixelDrawActivity.class);
-                        intent.putExtra(SIZE_KEY,PixelDrawView.PIXEL_SIZE_16X16);
-                        startActivity(intent);
+                        String name = data.get(pos).name;
+                        int size = data.get(pos).size;
+                        startPicDrawActivity(name,size);
                         } catch (Exception e)
                         {
                             Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_LONG).show();
@@ -215,6 +183,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        refreshUI();
+    }
+
+    
+    
     public static int[] bubbleSort(int[] array){
         if(array == null)
             return array;
@@ -262,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                public void onClick(View v) {
                    
                    mDialog.dismiss();
-                   data.add(new PicRVItem(mDialog.getName()));
+                   data.add(new PicRVItem(mDialog.getName(),mDialog.getDrawSize()));
                    refreshUI();
                    PicFileTool.writeToFile(MainActivity.this,"data",data);
                    fab.callOnClick();
@@ -408,6 +384,27 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.zgily:
+                ++i;
+                Toast.makeText(MainActivity.this,"感谢您使用本软件😊",Toast.LENGTH_LONG).show();
+                if (i==10){
+                    Toast.makeText(MainActivity.this,"WJY我喜欢你❤️",Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
    
 }

@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.Intent;
+import ghh.zgily.utils.PicFileTool;
 
 
 public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
@@ -59,7 +60,9 @@ public class PicRVAdapter extends RecyclerView.Adapter<PicRVAdapter.ViewHolder>
         //vh.pic.setBackgroundDrawable(itemList.get(pos).pic);
         final String text = itemList.get(pos).name;
         holder.name.setText(itemList.get(pos).name);
-        holder.pic.setImageBitmap(BitmapFactory.decodeFile(path+itemList.get(pos).pic));
+        Bitmap bitmap = PicFileTool.readBitmapFromJsonFile(itemList.get(pos).name+".bp");
+        if (bitmap!=null)
+            holder.pic.setImageBitmap(bitmap);
         holder.itemView.setLongClickable(true);
         /*
         holder.itemView.setOnClickListener(new View.OnClickListener(){

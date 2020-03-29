@@ -1,9 +1,10 @@
 package ghh.zgily.struct;
-import android.graphics.Path;
 import android.graphics.Paint;
+import android.graphics.Path;
 
-public class PixelPathItem {
+public class PixelPathItem{
     public Path pixelPath;
+    //public int paintColor;
     public Paint pixelPaint; 
     
     public PixelPathItem (Path path,Paint paint)
